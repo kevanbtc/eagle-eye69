@@ -63,6 +63,16 @@ export default function Layout({ children }: LayoutProps) {
                     : 'text-white/70 hover:bg-white/5 hover:text-white'
                 }`}
               >
+                <Icon className="h-5 w-5" />
+                {item.name}
+              </Link>
+            )
+          })}
+        </nav>
+      </div>
+
+      {/* Main Content */}
+      <div className="lg:pl-64">
         {/* Top bar */}
         <div className="sticky top-0 z-40 flex h-16 items-center gap-x-4 border-b border-gray-200 bg-eagle-blue px-4 shadow-sm">
           <button
@@ -130,16 +140,6 @@ export default function Layout({ children }: LayoutProps) {
                   </>
                 )}
               </div>
-            </div>
-          </div>
-        </div>assName="lg:hidden text-gray-700"
-            aria-label="Open sidebar"
-          >
-            <Menu className="h-6 w-6" />
-          </button>
-          <div className="flex flex-1 gap-x-4 justify-end">
-            <div className="text-sm text-gray-600">
-              Welcome to Eagle Eye Estimating System
             </div>
           </div>
         </div>

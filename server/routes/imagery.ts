@@ -1,8 +1,12 @@
 import { Router } from 'express';
 import OpenAI from 'openai';
 import { prisma } from '../index.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+
+// Apply authentication to all imagery routes
+router.use(authenticate);
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Generate remodeling concept images with DALL-E
@@ -21,7 +25,7 @@ router.post('/generate-remodel-concept', async (req, res) => {
       style: 'natural'
     });
 
-    const imageUrl = response.data[0].url || '';
+    const imageUrl = response.data?.[0]?.url || '';
 
     // Save to database
     const aiImage = await prisma.aIGeneratedImage.create({
@@ -88,7 +92,7 @@ router.post('/generate-before-after', async (req, res) => {
       style: 'natural'
     });
 
-    const afterImageUrl = imageResponse.data[0].url || '';
+    const afterImageUrl = imageResponse.data?.[0]?.url || '';
 
     // Save both images
     const aiImage = await prisma.aIGeneratedImage.create({
@@ -130,7 +134,7 @@ router.post('/generate-floor-plan', async (req, res) => {
       quality: 'hd'
     });
 
-    const imageUrl = response.data[0].url || '';
+    const imageUrl = response.data?.[0]?.url || '';
 
     const aiImage = await prisma.aIGeneratedImage.create({
       data: {
@@ -333,7 +337,7 @@ router.post('/generate-variations', async (req, res) => {
         style: 'natural'
       });
 
-      const imageUrl = response.data[0].url || '';
+      const imageUrl = response.data?.[0]?.url || '';
 
       const aiImage = await prisma.aIGeneratedImage.create({
         data: {

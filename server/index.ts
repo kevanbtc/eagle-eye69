@@ -6,19 +6,47 @@ import { fileURLToPath } from 'url';
 import { PrismaClient } from '@prisma/client';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import compression from 'compression';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
+// Validate environment variables
+import { env } from './config/env.js';
+
 const app = express();
-const prisma = new PrismaClient();
-const PORT = process.env.PORT || 5000;
+
+// Initialize Prisma with error handling
+let prisma: PrismaClient;
+try {
+  prisma = new PrismaClient({
+    log: env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  });
+  await prisma.$connect();
+  console.log('✅ Database connected successfully');
+} catch (error) {
+  console.error('❌ Database connection failed:', error);
+  process.exit(1);
+}
+
+const PORT = env.PORT || 5000;
+
+// CORS configuration
+const corsOptions = {
+  origin: env.NODE_ENV === 'production' 
+    ? (process.env.ALLOWED_ORIGINS?.split(',') || ['https://yourdomain.com'])
+    : ['http://localhost:5173', 'http://localhost:3000'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(cors(corsOptions));
+app.use(compression()); // Compress responses
+app.use(express.json({ limit: '10mb' })); // Body size limit
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Security middleware
 app.use(helmet({
@@ -142,8 +170,29 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   res.status(500).json({ error: 'Something went wrong!', message: err.message });
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🚀 Eagle Eye API Server running on port ${PORT}`);
+  console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
+  console.log(`🔒 Environment: ${env.NODE_ENV}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', async () => {
+  console.log('SIGTERM received, shutting down gracefully...');
+  server.close(async () => {
+    await prisma.$disconnect();
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', async () => {
+  console.log('\nSIGINT received, shutting down gracefully...');
+  server.close(async () => {
+    await prisma.$disconnect();
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
 });
 
 export { prisma };

@@ -27,10 +27,14 @@
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",
+    "@sentry/node": "^10.27.0",
+    "@sentry/profiling-node": "^10.27.0",
     "@tanstack/react-query": "^5.14.2",
+    "@types/compression": "^1.8.1",
     "@types/multer": "^2.0.0",
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
+    "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "exceljs": "^4.4.0",
@@ -47,6 +51,7 @@
     "recharts": "^2.10.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "winston": "^3.18.3",
     "zod": "^3.25.76"
   },
   "devDependencies": {

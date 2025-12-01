@@ -1,8 +1,12 @@
 import { Router } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { authenticate } from '../middleware/auth.js'
 
 const router = Router()
 const prisma = new PrismaClient()
+
+// Apply authentication to all marketing routes
+router.use(authenticate)
 
 // Get marketing stats overview
 router.get('/stats', async (req, res) => {

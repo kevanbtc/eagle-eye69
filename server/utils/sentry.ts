@@ -1,11 +1,11 @@
 import * as Sentry from '@sentry/node';
-import { ProfilingIntegration } from '@sentry/profiling-node';
-import { Express } from 'express';
+import { nodeProfilingIntegration } from '@sentry/profiling-node';
+import { Express, Request, Response, NextFunction } from 'express';
 
 /**
  * Initialize Sentry error tracking
  */
-export const initSentry = (app: Express) => {
+export const initSentry = (_app: Express) => {
   const dsn = process.env.SENTRY_DSN;
   
   if (!dsn) {
@@ -18,11 +18,9 @@ export const initSentry = (app: Express) => {
     environment: process.env.SENTRY_ENVIRONMENT || process.env.NODE_ENV || 'development',
     integrations: [
       // Enable HTTP calls tracing
-      new Sentry.Integrations.Http({ tracing: true }),
-      // Enable Express.js middleware tracing
-      new Sentry.Integrations.Express({ app }),
+      Sentry.httpIntegration(),
       // Enable profiling
-      new ProfilingIntegration(),
+      nodeProfilingIntegration(),
     ],
     // Performance Monitoring
     tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
@@ -30,18 +28,16 @@ export const initSentry = (app: Express) => {
     profilesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
   });
 
-  // RequestHandler creates a separate execution context using domains
-  app.use(Sentry.Handlers.requestHandler());
-  // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.Handlers.tracingHandler());
-
   console.log('✅ Sentry error tracking initialized');
 };
 
 /**
  * Error handler middleware - must be placed after all routes
  */
-export const sentryErrorHandler = Sentry.Handlers.errorHandler();
+export const sentryErrorHandler = (err: Error, _req: Request, _res: Response, next: NextFunction) => {
+  Sentry.captureException(err);
+  next(err);
+};
 
 /**
  * Manual error capture

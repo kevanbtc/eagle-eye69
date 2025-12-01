@@ -1,11 +1,15 @@
 import { Router } from 'express';
 import OpenAI from 'openai';
 import { prisma } from '../index.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
+
+// Apply authentication to all AI routes
+router.use(authenticate);
 
 // AI cost prediction for materials
 router.post('/predict-cost', async (req, res) => {

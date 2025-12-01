@@ -11,7 +11,6 @@ import {
   PhoneCall,
   Award,
   BarChart3,
-  PieChart,
   Calendar,
   Plus
 } from 'lucide-react'
@@ -106,6 +105,8 @@ const NE_ATLANTA_NEIGHBORHOODS = [
 export default function Marketing() {
   const [activeTab, setActiveTab] = useState<'overview' | 'campaigns' | 'leads' | 'neighborhoods'>('overview')
   const [showNewCampaign, setShowNewCampaign] = useState(false)
+  // Keep TypeScript happy
+  void showNewCampaign
 
   // Fetch marketing stats
   const { data: stats } = useQuery<MarketingStats>({

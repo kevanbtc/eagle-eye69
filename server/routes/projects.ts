@@ -1,12 +1,20 @@
 import { Router } from 'express';
 import { prisma } from '../index.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+
+// Apply authentication to all project routes
+router.use(authenticate);
 
 // Get all projects
 router.get('/', async (req, res) => {
   try {
+    // Admins see all projects, others see only their own
+    const where = req.user?.role === 'ADMIN' ? {} : { userId: req.user?.userId };
+    
     const projects = await prisma.project.findMany({
+      where,
       include: {
         user: { select: { id: true, name: true, email: true } },
         estimates: { select: { id: true, name: true, totalCost: true, status: true } },
@@ -49,7 +57,7 @@ router.post('/', async (req, res) => {
         description: req.body.description,
         address: req.body.address,
         type: req.body.type,
-        userId: req.body.userId, // TODO: Get from JWT token
+        userId: req.user!.userId, // Get from JWT token
       }
     });
     res.status(201).json(project);

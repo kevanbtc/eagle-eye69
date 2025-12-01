@@ -35,14 +35,13 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'Password is required')
 });
 
-// Project schemas
+// Project schemas (userId comes from JWT, not request body)
 export const createProjectSchema = z.object({
   name: z.string().min(3, 'Project name must be at least 3 characters'),
   description: z.string().optional(),
   address: z.string().min(5, 'Address is required'),
   type: z.enum(['SINGLE_FAMILY', 'MULTI_FAMILY', 'COMMERCIAL', 'INDUSTRIAL', 'RENOVATION']),
-  status: z.enum(['LEAD', 'PLANNING', 'IN_PROGRESS', 'COMPLETED', 'ON_HOLD']).optional(),
-  userId: z.string().uuid().optional()
+  status: z.enum(['LEAD', 'PLANNING', 'IN_PROGRESS', 'COMPLETED', 'ON_HOLD']).optional()
 });
 
 export const updateProjectSchema = createProjectSchema.partial();

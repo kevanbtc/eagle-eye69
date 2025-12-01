@@ -3,8 +3,12 @@ import ExcelJS from 'exceljs';
 import { prisma } from '../index.js';
 import path from 'path';
 import fs from 'fs';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+
+// Apply authentication to all export routes
+router.use(authenticate);
 
 // Export estimate to Excel
 router.post('/estimate/:id/excel', async (req, res) => {

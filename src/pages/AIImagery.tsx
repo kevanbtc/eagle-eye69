@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { Sparkles, Image as ImageIcon, Upload, Wand2, Grid3x3, Download, Eye } from 'lucide-react';
+import { Sparkles, Upload, Wand2, Grid3x3, Download, Eye } from 'lucide-react';
 
 export default function AIImagery() {
   const [view, setView] = useState<'generate' | 'remodel' | 'gallery'>('generate');

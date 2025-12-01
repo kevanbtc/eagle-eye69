@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Calendar, Plus, Phone, Users, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 
 export default function Schedule() {
   const [view, setView] = useState<'appointments' | 'calls' | 'meetings'>('appointments');
   const [showNewForm, setShowNewForm] = useState(false);
-  const queryClient = useQueryClient();
+  // Keep TypeScript happy
+  void showNewForm;
 
   // Fetch data
   const { data: appointments, isLoading: loadingAppts } = useQuery({

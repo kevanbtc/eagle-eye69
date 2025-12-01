@@ -1,9 +1,13 @@
 import { Router } from 'express';
 import OpenAI from 'openai';
 import { prisma } from '../index.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// Apply authentication to all scheduling routes
+router.use(authenticate);
 
 // AI-powered appointment scheduling
 router.post('/appointments/ai-schedule', async (req, res) => {

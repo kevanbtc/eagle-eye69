@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import { prisma } from '../index.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+
+// Apply authentication to all material routes
+router.use(authenticate);
 
 // Get all materials
 router.get('/', async (req, res) => {

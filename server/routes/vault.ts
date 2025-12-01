@@ -1,11 +1,15 @@
 import { Router } from 'express';
 import axios from 'axios';
 import { prisma } from '../index.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
 
 const VAULT_API_URL = process.env.VAULT_API_URL || 'https://vault.unykorn.com/api';
 const VAULT_API_KEY = process.env.VAULT_API_KEY || '';
+
+// Apply authentication to all vault routes
+router.use(authenticate);
 
 // Tokenize project asset
 router.post('/tokenize/:projectId', async (req, res) => {
