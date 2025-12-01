@@ -11,7 +11,7 @@ export const validate = (schema: z.ZodSchema) => {
       if (error instanceof z.ZodError) {
         return res.status(400).json({
           error: 'Validation failed',
-          details: error.errors.map(err => ({
+          details: error.issues.map((err: { path: PropertyKey[]; message: string }) => ({
             path: err.path.join('.'),
             message: err.message
           }))
@@ -152,5 +152,5 @@ export const tokenizeProjectSchema = z.object({
   tokenSymbol: z.string().min(2).max(10, 'Token symbol must be 2-10 characters'),
   totalSupply: z.number().min(1, 'Total supply must be at least 1'),
   pricePerToken: z.number().min(0.01, 'Price per token must be greater than 0'),
-  metadata: z.record(z.any()).optional()
+  metadata: z.record(z.string(), z.any()).optional()
 });

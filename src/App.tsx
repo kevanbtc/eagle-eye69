@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { ReactNode } from 'react'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import Projects from './pages/Projects'
@@ -12,13 +13,13 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 
 // Protected Route wrapper
-function ProtectedRoute({ children }: { children: JSX.Element }) {
+function ProtectedRoute({ children }: { children: ReactNode }) {
   const token = localStorage.getItem('token')
   return token ? children : <Navigate to="/login" replace />
 }
 
 // Public Route wrapper (redirect if logged in)
-function PublicRoute({ children }: { children: JSX.Element }) {
+function PublicRoute({ children }: { children: ReactNode }) {
   const token = localStorage.getItem('token')
   return token ? <Navigate to="/" replace /> : children
 }
