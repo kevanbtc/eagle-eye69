@@ -1,0 +1,540 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(ESTIMATOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  projects  Project[]
+  estimates Estimate[]
+}
+
+enum Role {
+  ADMIN
+  ESTIMATOR
+  INVESTOR
+  CONTRACTOR
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  address     String?
+  type        ProjectType
+  status      ProjectStatus @default(PLANNING)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  estimates          Estimate[]
+  vaultAssets        VaultAsset[]
+  appointments       Appointment[]
+  meetings           Meeting[]
+  aiGeneratedImages  AIGeneratedImage[]
+  remodelingProjects RemodelingProject[]
+}
+
+enum ProjectType {
+  SINGLE_FAMILY
+  MULTI_FAMILY
+  COMMERCIAL
+  RENOVATION
+  GREEN_BUILD
+  SOLAR_READY
+}
+
+enum ProjectStatus {
+  PLANNING
+  ESTIMATING
+  APPROVED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Estimate {
+  id          String   @id @default(uuid())
+  name        String
+  version     Int      @default(1)
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  totalCost   Decimal  @db.Decimal(12, 2)
+  laborCost   Decimal  @db.Decimal(12, 2)
+  materialCost Decimal @db.Decimal(12, 2)
+  markupPercent Decimal @db.Decimal(5, 2)
+  profitMargin Decimal  @db.Decimal(12, 2)
+  status      EstimateStatus @default(DRAFT)
+  aiGenerated Boolean  @default(false)
+  stackImported Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  lineItems          EstimateLineItem[]
+  exports            EstimateExport[]
+  aiGeneratedImages  AIGeneratedImage[]
+  remodelingProjects RemodelingProject[]
+}
+
+enum EstimateStatus {
+  DRAFT
+  UNDER_REVIEW
+  APPROVED
+  SENT_TO_CLIENT
+  ACCEPTED
+  REJECTED
+}
+
+model EstimateLineItem {
+  id          String   @id @default(uuid())
+  estimateId  String
+  estimate    Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+  materialId  String?
+  material    Material? @relation(fields: [materialId], references: [id])
+  category    String
+  description String
+  quantity    Decimal  @db.Decimal(10, 4)
+  unit        String
+  unitCost    Decimal  @db.Decimal(10, 2)
+  totalCost   Decimal  @db.Decimal(12, 2)
+  laborHours  Decimal? @db.Decimal(8, 2)
+  isGreen     Boolean  @default(false)
+  notes       String?
+  sortOrder   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Material {
+  id          String   @id @default(uuid())
+  name        String
+  category    String
+  subCategory String?
+  description String?
+  unit        String
+  baseCost    Decimal  @db.Decimal(10, 2)
+  supplier    String?
+  sku         String?
+  isGreen     Boolean  @default(false)
+  isSolar     Boolean  @default(false)
+  isModular   Boolean  @default(false)
+  certifications String[]
+  carbonFootprint Decimal? @db.Decimal(10, 4)
+  energyRating String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  lineItems   EstimateLineItem[]
+  priceHistory MaterialPriceHistory[]
+}
+
+model MaterialPriceHistory {
+  id         String   @id @default(uuid())
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id])
+  price      Decimal  @db.Decimal(10, 2)
+  source     String?
+  region     String?
+  createdAt  DateTime @default(now())
+}
+
+model EstimateExport {
+  id         String   @id @default(uuid())
+  estimateId String
+  estimate   Estimate @relation(fields: [estimateId], references: [id])
+  format     ExportFormat
+  fileName   String
+  filePath   String
+  fileSize   Int
+  createdAt  DateTime @default(now())
+}
+
+enum ExportFormat {
+  EXCEL
+  CSV
+  PDF
+  STACK
+  BUILDXACT
+  POWER_BI
+}
+
+model VaultAsset {
+  id              String   @id @default(uuid())
+  projectId       String
+  project         Project  @relation(fields: [projectId], references: [id])
+  assetType       String
+  tokenId         String?
+  vaultReference  String
+  value           Decimal  @db.Decimal(12, 2)
+  metadata        Json?
+  status          AssetStatus @default(PENDING)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum AssetStatus {
+  PENDING
+  TOKENIZED
+  ACTIVE
+  REDEEMED
+  EXPIRED
+}
+
+model AIEstimateLog {
+  id         String   @id @default(uuid())
+  prompt     String
+  response   Json
+  model      String
+  tokenUsed  Int
+  costUSD    Decimal  @db.Decimal(8, 4)
+  accuracy   Decimal? @db.Decimal(5, 2)
+  createdAt  DateTime @default(now())
+}
+
+model Appointment {
+  id            String   @id @default(uuid())
+  title         String
+  description   String?
+  startTime     DateTime
+  endTime       DateTime
+  location      String?
+  attendees     String[]
+  projectId     String?
+  project       Project?  @relation(fields: [projectId], references: [id])
+  userId        String
+  status        AppointmentStatus @default(SCHEDULED)
+  aiGenerated   Boolean  @default(false)
+  googleEventId String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+}
+
+model PhoneCall {
+  id          String   @id @default(uuid())
+  phoneNumber String
+  direction   CallDirection
+  duration    Int?
+  notes       String?  @db.Text
+  recording   String?
+  projectId   String?
+  userId      String
+  status      CallStatus @default(PENDING)
+  aiSummary   String?  @db.Text
+  scheduledAt DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+}
+
+enum CallDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum CallStatus {
+  PENDING
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  MISSED
+  VOICEMAIL
+}
+
+model Meeting {
+  id          String   @id @default(uuid())
+  title       String
+  agenda      String?  @db.Text
+  minutes     String?  @db.Text
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  attendees   String[]
+  projectId   String?
+  project     Project?  @relation(fields: [projectId], references: [id])
+  userId      String
+  status      MeetingStatus @default(SCHEDULED)
+  aiNotes     String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum MeetingStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model AIGeneratedImage {
+  id            String   @id @default(uuid())
+  prompt        String   @db.Text
+  imageUrl      String
+  thumbnailUrl  String?
+  projectId     String?
+  project       Project?  @relation(fields: [projectId], references: [id])
+  estimateId    String?
+  estimate      Estimate? @relation(fields: [estimateId], references: [id])
+  imageType     ImageType
+  model         String
+  resolution    String
+  style         String?
+  metadata      Json?
+  userId        String
+  createdAt     DateTime @default(now())
+}
+
+enum ImageType {
+  RENDERING
+  BEFORE_AFTER
+  REMODEL_CONCEPT
+  FLOOR_PLAN
+  EXTERIOR_VIEW
+  INTERIOR_VIEW
+  MATERIAL_SAMPLE
+}
+
+model RemodelingProject {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?  @db.Text
+  projectId       String?
+  project         Project?  @relation(fields: [projectId], references: [id])
+  originalImage   String?
+  conceptImages   String[]
+  selectedDesign  String?
+  estimateId      String?
+  estimate        Estimate? @relation(fields: [estimateId], references: [id])
+  passthroughData Json?
+  designNotes     String?  @db.Text
+  userId          String
+  status          RemodelingStatus @default(CONCEPT)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum RemodelingStatus {
+  CONCEPT
+  DESIGN
+  APPROVED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String   @db.Text
+  type      NotificationType
+  read      Boolean  @default(false)
+  actionUrl String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+}
+
+enum NotificationType {
+  APPOINTMENT_REMINDER
+  MEETING_SCHEDULED
+  CALL_SCHEDULED
+  ESTIMATE_READY
+  PROJECT_UPDATE
+  AI_GENERATION_COMPLETE
+  SYSTEM
+}
+
+model MarketingCampaign {
+  id           String   @id @default(uuid())
+  name         String
+  platform     Platform
+  campaignType CampaignType
+  budget       Decimal  @db.Decimal(10, 2)
+  spent        Decimal  @db.Decimal(10, 2) @default(0)
+  impressions  Int      @default(0)
+  clicks       Int      @default(0)
+  leads        Int      @default(0)
+  conversions  Int      @default(0)
+  revenue      Decimal  @db.Decimal(12, 2) @default(0)
+  startDate    DateTime
+  endDate      DateTime?
+  status       CampaignStatus @default(ACTIVE)
+  targetArea   String[]
+  adCopy       String?  @db.Text
+  imageUrl     String?
+  notes        String?  @db.Text
+  userId       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  leadRecords  Lead[]
+}
+
+enum Platform {
+  NEXTDOOR
+  GOOGLE_LSA
+  GOOGLE_ADS
+  FACEBOOK
+  INSTAGRAM
+  ANGI
+  THUMBTACK
+  HOMEADVISOR
+  REFERRAL
+  ORGANIC
+  OTHER
+}
+
+enum CampaignType {
+  LOCAL_DEAL
+  CPC_AD
+  NEIGHBORHOOD_SPONSORSHIP
+  BRAND_AWARENESS
+  LEAD_GENERATION
+  RETARGETING
+}
+
+enum CampaignStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ARCHIVED
+}
+
+model Lead {
+  id                 String   @id @default(uuid())
+  firstName          String
+  lastName           String
+  email              String?
+  phone              String
+  address            String?
+  city               String?
+  state              String?  @default("GA")
+  zipCode            String?
+  neighborhood       String?
+  source             Platform
+  sourceNeighborhood String?
+  campaignId         String?
+  campaign           MarketingCampaign? @relation(fields: [campaignId], references: [id])
+  serviceInterest    String[]
+  estimatedValue     Decimal? @db.Decimal(12, 2)
+  actualValue        Decimal? @db.Decimal(12, 2)
+  priority           LeadPriority @default(MEDIUM)
+  status             LeadStatus @default(NEW)
+  notes              String?  @db.Text
+  contactedAt        DateTime?
+  quoteSentAt        DateTime?
+  conversionDate     DateTime?
+  lostReason         String?
+  userId             String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  
+  activities         LeadActivity[]
+}
+
+enum LeadPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  QUOTE_SENT
+  NEGOTIATING
+  WON
+  LOST
+  DISQUALIFIED
+}
+
+model LeadActivity {
+  id          String   @id @default(uuid())
+  leadId      String
+  lead        Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  activityType ActivityType
+  description String   @db.Text
+  notes       String?  @db.Text
+  userId      String
+  createdAt   DateTime @default(now())
+}
+
+enum ActivityType {
+  CALL
+  EMAIL
+  TEXT
+  SITE_VISIT
+  QUOTE_SENT
+  FOLLOW_UP
+  MEETING
+  NOTE
+}
+
+model NeighborhoodPerformance {
+  id              String   @id @default(uuid())
+  neighborhood    String
+  city            String
+  state           String   @default("GA")
+  zipCode         String?
+  totalLeads      Int      @default(0)
+  totalCampaigns  Int      @default(0)
+  totalSpent      Decimal  @db.Decimal(10, 2) @default(0)
+  totalRevenue    Decimal  @db.Decimal(12, 2) @default(0)
+  avgCostPerLead  Decimal  @db.Decimal(10, 2) @default(0)
+  conversionRate  Decimal  @db.Decimal(5, 2) @default(0)
+  roi             Decimal  @db.Decimal(10, 2) @default(0)
+  lastUpdated     DateTime @default(now())
+  createdAt       DateTime @default(now())
+  
+  @@unique([neighborhood, city, state])
+}
+
+model BudgetPlan {
+  id              String   @id @default(uuid())
+  name            String
+  tier            BudgetTier
+  monthlyBudget   Decimal  @db.Decimal(10, 2)
+  nextdoorBudget  Decimal  @db.Decimal(10, 2)
+  googleBudget    Decimal  @db.Decimal(10, 2)
+  facebookBudget  Decimal  @db.Decimal(10, 2)
+  otherBudget     Decimal  @db.Decimal(10, 2)
+  projectedLeads  Int
+  projectedRevenue Decimal @db.Decimal(12, 2)
+  projectedROI    Decimal  @db.Decimal(10, 2)
+  active          Boolean  @default(false)
+  startDate       DateTime
+  endDate         DateTime?
+  userId          String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum BudgetTier {
+  LOW
+  MEDIUM
+  AGGRESSIVE
+  CUSTOM
+}
