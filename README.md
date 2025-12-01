@@ -1,15 +1,64 @@
-# Eagle Eye Construction Estimating System 🏗️ v2.0
+# 🦅 Eagle Eye Construction Platform v2.0
 
-## Complete AI-Powered Construction Management Platform
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kevanbtc/eagle-eye69)
+[![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://kevanbtc.github.io/eagle-eye69/)
+[![License](https://img.shields.io/badge/license-MIT-green)]()
 
-Full-stack construction estimating and project coordination system featuring:
-- **AI-Powered Estimating** - Automatic cost predictions, blueprint analysis, material recommendations
-- **AI Coordination Hub** - Intelligent scheduling, meeting management, phone call tracking  
-- **AI Imagery & Remodeling** - Generate photorealistic renderings, remodel concepts, before/after visualizations
-- **Excel Integration** - Professional .xlsx export compatible with Microsoft 365
-- **Green Building Database** - Sustainable materials, solar-ready components, energy certifications
-- **Investor Dashboard** - Portfolio analytics, project tracking, ROI metrics
-- **Vault Integration** - Unykorn tokenization API for asset management
+## 🌟 Complete AI-Powered Construction Platform
+
+**Professional construction management system for contractors in NE Atlanta**  
+*Serving Johns Creek • Alpharetta • Duluth • Peachtree Corners • Dunwoody*
+
+### Core Features
+- 🤖 **AI-Powered Estimating** - Automatic cost predictions, blueprint analysis, material recommendations
+- 📅 **AI Coordination Hub** - Intelligent scheduling, meeting management, phone call tracking  
+- 🎨 **AI Imagery & Remodeling** - DALL-E 3 renderings, before/after visualization
+- 📊 **Marketing ROI Tracker** - Campaign management, lead attribution, neighborhood analytics
+- 📝 **Lead Capture System** - Public forms with source tracking (Nextdoor, Google, Facebook)
+- 📈 **Budget Planner** - 3-tier marketing budgets with ROI projections
+- 📄 **Excel Integration** - Professional .xlsx export compatible with Microsoft 365
+- 🌱 **Green Building Database** - Sustainable materials, solar-ready components
+- 💼 **Investor Dashboard** - Portfolio analytics, project tracking, ROI metrics
+- 🔐 **Full Authentication** - JWT-based with role management (Admin, Estimator, Client)
+
+---
+
+## 🚀 Quick Links
+
+- **🌐 Live Website:** [https://kevanbtc.github.io/eagle-eye69/](https://kevanbtc.github.io/eagle-eye69/)
+- **📚 Setup Guide:** [SETUP_GUIDE.md](./SETUP_GUIDE.md)
+- **🚢 Deployment:** [DEPLOY.md](./DEPLOY.md)
+- **📖 Full Docs:** [GitHub Repository](https://github.com/kevanbtc/eagle-eye69)
+
+---
+
+## 🎯 One-Click Deploy Options
+
+### 1. Full Platform (Recommended)
+Complete system with all features enabled.
+
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kevanbtc/eagle-eye69)
+
+**Includes:** Estimating • Marketing • AI Imagery • Lead Management • Authentication
+
+---
+
+### 2. Lead Capture Form (Lightweight)
+Public-facing lead form with source tracking.
+
+```bash
+cd apps/lead-capture
+vercel
+```
+
+**Features:** Source tracking • Neighborhood attribution • Email notifications • No database required
+
+---
+
+### 3. Marketing Dashboard (Analytics)
+Standalone ROI tracker for campaign management.
+
+**Features:** Campaign tracking • Budget planning • Cost-per-lead • Performance analytics
 
 ---
 
