@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: eagle-eye-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: eagleuser
+      POSTGRES_PASSWORD: eagle123
+      POSTGRES_DB: eagle_eye
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eagleuser -d eagle_eye"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API Server
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: eagle-eye-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://eagleuser:eagle123@postgres:5432/eagle_eye?schema=public
+      - JWT_SECRET=${JWT_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PORT=5000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - uploads:/app/uploads
+
+  # Frontend (Nginx serving built React app)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: eagle-eye-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://backend:5000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads:
+    driver: local
+
+networks:
+  default:
+    name: eagle-eye-network

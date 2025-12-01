@@ -21,9 +21,43 @@ app.use(express.json());
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+// Health check endpoints
+app.get('/health', async (req, res) => {
+  try {
+    // Check database connection
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ 
+      status: 'healthy', 
+      timestamp: new Date().toISOString(),
+      database: 'connected',
+      service: 'eagle-eye-backend',
+      version: '2.0.0'
+    });
+  } catch (error) {
+    res.status(503).json({ 
+      status: 'unhealthy', 
+      timestamp: new Date().toISOString(),
+      database: 'disconnected',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+app.get('/api/health', async (req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ 
+      status: 'ok', 
+      timestamp: new Date().toISOString(),
+      database: 'connected'
+    });
+  } catch (error) {
+    res.status(503).json({ 
+      status: 'error', 
+      timestamp: new Date().toISOString(),
+      database: 'disconnected'
+    });
+  }
 });
 
 // Routes
