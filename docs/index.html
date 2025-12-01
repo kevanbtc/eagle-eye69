@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eagle Eye Construction - AI-Powered Estimating Platform</title>
+    <meta name="description" content="Complete AI construction platform with advanced estimating, marketing ROI tracking, and lead management for contractors in NE Atlanta.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #1e3a8a;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            color: #1e3a8a;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #1e3a8a;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-card {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #1e3a8a;
+        }
+        
+        .feature-card p {
+            color: #6b7280;
+        }
+        
+        .apps-section {
+            background: #f9fafb;
+            padding: 60px 20px;
+        }
+        
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .app-card {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .app-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #1e3a8a;
+        }
+        
+        .app-card .tag {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .app-features {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .app-features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #4b5563;
+        }
+        
+        .app-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+        
+        .deploy-btn {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        
+        .deploy-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+        
+        .tech-stack {
+            background: white;
+            padding: 60px 20px;
+        }
+        
+        .tech-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .tech-badge {
+            background: #1e3a8a;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+        
+        .stats {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 60px 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+        
+        .stat-item h4 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-item p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        footer {
+            background: #111827;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>🦅 Eagle Eye Construction</h1>
+        <p>Complete AI-Powered Construction Platform with Marketing ROI Tracking</p>
+        <div class="cta-buttons">
+            <a href="https://github.com/kevanbtc/eagle-eye69" class="btn btn-primary">View on GitHub</a>
+            <a href="#deploy" class="btn btn-secondary">Deploy Now</a>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h4>50+</h4>
+                    <p>API Endpoints</p>
+                </div>
+                <div class="stat-item">
+                    <h4>25+</h4>
+                    <p>Database Models</p>
+                </div>
+                <div class="stat-item">
+                    <h4>11</h4>
+                    <p>Route Modules</p>
+                </div>
+                <div class="stat-item">
+                    <h4>100%</h4>
+                    <p>TypeScript</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container">
+        <h2 class="section-title">Core Features</h2>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Advanced Estimating</h3>
+                <p>AI-powered cost estimation with materials database, labor calculations, and real-time pricing updates.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Marketing ROI Tracker</h3>
+                <p>Track campaigns across Nextdoor, Google LSA, and Facebook. Monitor cost-per-lead and neighborhood performance.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>AI Imagery Generation</h3>
+                <p>DALL-E 3 integration for remodeling visualizations. Upload blueprints, get photo-realistic renders.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3>Smart Scheduling</h3>
+                <p>Coordinate appointments, calls, and meetings with AI-powered calendar management.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔔</div>
+                <h3>Real-Time Notifications</h3>
+                <p>Stay updated on project changes, new leads, and appointment reminders with live notifications.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">💼</div>
+                <h3>Investor Dashboard</h3>
+                <p>Track project financials, ROI metrics, and portfolio performance in one unified view.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- One-Click Apps Section -->
+    <div class="apps-section" id="deploy">
+        <div class="container">
+            <h2 class="section-title">One-Click Deployable Apps</h2>
+            <div class="app-grid">
+                
+                <!-- App 1: Full Platform -->
+                <div class="app-card">
+                    <h3>🏢 Complete Platform</h3>
+                    <span class="tag">Full Stack</span>
+                    <p>Deploy the entire Eagle Eye platform with all features enabled.</p>
+                    <ul class="app-features">
+                        <li>Estimating engine</li>
+                        <li>Marketing dashboard</li>
+                        <li>AI imagery generation</li>
+                        <li>Lead management</li>
+                        <li>Authentication & roles</li>
+                        <li>PostgreSQL database</li>
+                    </ul>
+                    <a href="https://vercel.com/new/clone?repository-url=https://github.com/kevanbtc/eagle-eye69" class="deploy-btn">Deploy to Vercel</a>
+                </div>
+
+                <!-- App 2: Lead Capture Only -->
+                <div class="app-card">
+                    <h3>📝 Lead Capture Landing Page</h3>
+                    <span class="tag">Lightweight</span>
+                    <p>Public-facing lead capture form with source tracking.</p>
+                    <ul class="app-features">
+                        <li>Custom branding</li>
+                        <li>Source attribution (Nextdoor, Google, Facebook)</li>
+                        <li>Neighborhood tracking</li>
+                        <li>Auto-email notifications</li>
+                        <li>CRM integration ready</li>
+                        <li>Mobile responsive</li>
+                    </ul>
+                    <a href="#" class="deploy-btn">Deploy Lead Form</a>
+                </div>
+
+                <!-- App 3: Marketing Dashboard Only -->
+                <div class="app-card">
+                    <h3>📊 Marketing ROI Dashboard</h3>
+                    <span class="tag">Analytics</span>
+                    <p>Standalone marketing analytics and campaign tracker.</p>
+                    <ul class="app-features">
+                        <li>Campaign management</li>
+                        <li>Budget planning tool</li>
+                        <li>Cost-per-lead tracking</li>
+                        <li>Neighborhood performance</li>
+                        <li>Multi-platform tracking</li>
+                        <li>Export to Excel/CSV</li>
+                    </ul>
+                    <a href="#" class="deploy-btn">Deploy Dashboard</a>
+                </div>
+
+                <!-- App 4: AI Estimate Generator -->
+                <div class="app-card">
+                    <h3>🤖 AI Estimate Generator</h3>
+                    <span class="tag">AI-Powered</span>
+                    <p>Quick estimate tool using AI for instant pricing.</p>
+                    <ul class="app-features">
+                        <li>Natural language input</li>
+                        <li>Instant cost estimates</li>
+                        <li>Material breakdown</li>
+                        <li>Labor calculations</li>
+                        <li>PDF export</li>
+                        <li>Email delivery</li>
+                    </ul>
+                    <a href="#" class="deploy-btn">Deploy Estimator</a>
+                </div>
+
+                <!-- App 5: Client Portal -->
+                <div class="app-card">
+                    <h3>👥 Client Portal</h3>
+                    <span class="tag">Customer-Facing</span>
+                    <p>Self-service portal for homeowners to track projects.</p>
+                    <ul class="app-features">
+                        <li>Project status updates</li>
+                        <li>Document sharing</li>
+                        <li>Payment tracking</li>
+                        <li>Photo galleries</li>
+                        <li>Message contractor</li>
+                        <li>Schedule appointments</li>
+                    </ul>
+                    <a href="#" class="deploy-btn">Deploy Portal</a>
+                </div>
+
+                <!-- App 6: Scheduler Widget -->
+                <div class="app-card">
+                    <h3>📆 Appointment Scheduler</h3>
+                    <span class="tag">Widget</span>
+                    <p>Embeddable scheduling widget for your website.</p>
+                    <ul class="app-features">
+                        <li>Real-time availability</li>
+                        <li>Service type selection</li>
+                        <li>Calendar sync (Google/Outlook)</li>
+                        <li>SMS/email reminders</li>
+                        <li>Timezone support</li>
+                        <li>Custom branding</li>
+                    </ul>
+                    <a href="#" class="deploy-btn">Deploy Scheduler</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Tech Stack Section -->
+    <div class="tech-stack">
+        <div class="container">
+            <h2 class="section-title">Technology Stack</h2>
+            <div class="tech-grid">
+                <span class="tech-badge">React 18</span>
+                <span class="tech-badge">TypeScript</span>
+                <span class="tech-badge">Node.js</span>
+                <span class="tech-badge">Express</span>
+                <span class="tech-badge">PostgreSQL</span>
+                <span class="tech-badge">Prisma ORM</span>
+                <span class="tech-badge">TailwindCSS</span>
+                <span class="tech-badge">Vite</span>
+                <span class="tech-badge">TanStack Query</span>
+                <span class="tech-badge">OpenAI API</span>
+                <span class="tech-badge">JWT Auth</span>
+                <span class="tech-badge">Docker</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Eagle Eye Construction. Licensed & Insured.</p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/kevanbtc/eagle-eye69">GitHub</a> | 
+                <a href="https://github.com/kevanbtc/eagle-eye69/issues">Issues</a> | 
+                <a href="https://github.com/kevanbtc/eagle-eye69/blob/main/README.md">Documentation</a>
+            </p>
+            <p style="margin-top: 20px; opacity: 0.7;">
+                Serving Johns Creek, Alpharetta, Duluth, Peachtree Corners & Dunwoody
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

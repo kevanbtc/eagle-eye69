@@ -1,0 +1,13 @@
+{
+  "name": "eagle-eye-lead-capture",
+  "version": "1.0.0",
+  "description": "Standalone lead capture form for Eagle Eye Construction",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build needed - static HTML'",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@vercel/kv": "^1.0.0"
+  }
+}
